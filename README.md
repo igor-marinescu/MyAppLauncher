@@ -44,7 +44,27 @@ notepad hosts;once_exe_arg;%windir%\System32\notepad.exe;C:\Windows\System32\dri
 
 The command line is built as `"<exe>" <argument1> <argument2> ...`. The exe is quoted only if its path contains spaces.
 
-A line is skipped if it has fewer than 3 fields, an empty name, an unknown option, or an exe that doesn't exist. At startup each skipped line shows a dialog: *"config.txt line # X invalid, ignored"*, with the reason.
+#### Variables
+
+To avoid repeating the same path or name many times, define a variable and use it as `$name`:
+
+```
+set project_path = C:\project\path
+set editor = C:\Program Files\Notepad++\notepad++.exe
+
+open_file;;notepad.exe;$project_path\file.txt
+project notes;once_exe_arg;$editor;$project_path\notes.txt
+```
+
+`open_file` becomes `open_file;;notepad.exe;C:\project\path\file.txt`.
+
+- `set <name> = <value>` defines a variable for all **following** lines. Defining it again changes the value from that line on.
+- Names use letters, digits and `_` (not starting with a digit) and ignore upper/lower case.
+- The value is the text after `=`, trimmed. It may use earlier variables and may contain `;`, so one variable can hold several arguments (`set args = -l "igor";-P 22`).
+- `$name` takes the longest run of letters, digits and `_` after `$`. Write `$$` for a literal `$`. A `$` followed by anything else (e.g. `\\server\c$\dir`) is left as is.
+- Variables are replaced in every field before the line is parsed; `%ENV%` variables in the exe are expanded afterwards.
+
+A line is skipped if it has fewer than 3 fields, an empty name, an unknown option, an exe that doesn't exist, or uses an undefined variable. A `set` line with an invalid variable name is skipped too. At startup each skipped line shows a dialog: *"config.txt line # X invalid, ignored"*, with the reason.
 
 **Where the file is looked for:**
 
@@ -105,7 +125,7 @@ main.cpp
 | File | Responsibility |
 |---|---|
 | `src/programentry.h` | `ProgramEntry` struct: name, option, exe (as configured and resolved), arguments, icon, line number |
-| `src/configparser.h/.cpp` | Reads and checks `config.txt`. Returns the valid entries plus a list of line errors |
+| `src/configparser.h/.cpp` | Reads and checks `config.txt`, handles `set` variables and `$name` replacement. Returns the valid entries plus a list of line errors |
 | `src/processutils.h/.cpp` | All Windows-specific code (see below) |
 | `src/launcherwindow.h/.cpp` | The UI: list text, filtering, selection, keys, launching, minimizing, saving/restoring window geometry |
 | `src/main.cpp` | Finds the config file, shows the error dialogs, loads icons, shows the window |

@@ -2,12 +2,15 @@
 # Format: <name>;<options>;<exe>;<argument1>;<argument2>;...
 # options: (empty) | once_exe | once_exe_arg
 # Empty lines and lines starting with '#' are ignored.
+# Variables: "set <name> = <value>", used as $name in the following lines ($$ = literal '$').
 
-notepad;;C:\Windows\System32\notepad.exe
-notepad once;once_exe;C:\Windows\System32\notepad.exe
-notepad hosts;once_exe_arg;C:\Windows\System32\notepad.exe;C:\Windows\System32\drivers\etc\hosts
-cmd;;C:\Windows\System32\cmd.exe
-calc;once_exe;C:\Windows\System32\calc.exe
+set sys32 = C:\Windows\System32
+
+notepad;;$sys32\notepad.exe
+notepad once;once_exe;$sys32\notepad.exe
+notepad hosts;once_exe_arg;$sys32\notepad.exe;$sys32\drivers\etc\hosts
+cmd;;$sys32\cmd.exe
+calc;once_exe;$sys32\calc.exe
 
 # Examples from the requirements (only loaded if the exe files exist):
 putty localhost;;c:\Program Files\PuTTY\putty.exe;-load "ubuntu32gb";-l "igor"

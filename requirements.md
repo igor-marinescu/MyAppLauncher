@@ -11,7 +11,7 @@ There is also an option to check whether the program is already running; if it i
 The user defines all programs that can be started by MyAppLauncher in a file called the "Configuration File" (`config.txt`).
 The Configuration File is a text file with the following format:
 
-- Each line defines one program that can be started by MyAppLauncher.
+- Each line defines either one program that can be started by MyAppLauncher, or a variable (see [Variables](#variables)).
 - Empty lines are ignored.
 - Lines that start with `#` are treated as comments and ignored.
 
@@ -75,6 +75,43 @@ C:\Program Files (x86)\Microsoft Office\root\Office16\EXCEL.EXE C:\hello.xls
 ```
 
 If the program is already running with the same argument, it is not started again; MyAppLauncher just switches to it.
+
+### Variables
+
+To simplify editing and maintaining the Configuration File, a name, path or file name that occurs several times can be replaced with a variable.
+
+A variable is defined on its own line:
+
+```
+set <variable_name> = <variable_value>
+```
+
+A variable is used by writing `$<variable_name>`. In every program definition after the variable's definition, each occurrence of `$<variable_name>` is replaced with the variable's value before the line is parsed.
+
+Rules:
+- The line starts with the keyword `set` followed by at least one space. White space around the name, around `=` and at the end of the value is ignored.
+- `variable_name` consists of letters, digits and `_`, and must not start with a digit. Variable names are case-insensitive (`$Project_Path` and `$project_path` are the same variable).
+- `variable_value` is everything after `=` (trimmed). It may be empty, may contain `;` (e.g. to hold several arguments), and may use variables defined earlier, which are replaced when the variable is defined.
+- A variable can be used only after it has been defined. Defining a variable again replaces its value for all following lines.
+- In `$<variable_name>`, the name is the longest sequence of letters, digits and `_` following `$`. For example, in `$project_path\file.txt` the variable is `project_path`.
+- `$$` is replaced with a literal `$`. A `$` that is not followed by a letter, `_` or `$` is kept as is (e.g. `\\server\c$\dir`).
+- Variables are replaced in all fields (name, options, exe and arguments).
+- If a variable definition is invalid (e.g. invalid variable name), or a program definition uses an undefined variable, the line is ignored and the dialog box "config.txt line # X invalid, ignored" is displayed.
+
+### Example 4 (variables)
+
+The following lines in the Configuration File:
+
+```
+set project_path = C:\project\path
+open_file;;notepad.exe;$project_path\file.txt
+```
+
+are equivalent to:
+
+```
+open_file;;notepad.exe;C:\project\path\file.txt
+```
 
 ## UI
 
