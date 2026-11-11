@@ -3,6 +3,7 @@
 # options: (empty) | once_exe | once_exe_arg
 # Empty lines and lines starting with '#' are ignored.
 # Variables: "set <name> = <value>", used as $name in the following lines ($$ = literal '$').
+# Predefined: $config_file = full path of this configuration file.
 
 set sys32 = C:\Windows\System32
 
@@ -11,6 +12,7 @@ notepad once;once_exe;$sys32\notepad.exe
 notepad hosts;once_exe_arg;$sys32\notepad.exe;$sys32\drivers\etc\hosts
 cmd;;$sys32\cmd.exe
 calc;once_exe;$sys32\calc.exe
+open_config_file;;$sys32\notepad.exe;$config_file
 
 # Examples from the requirements (only loaded if the exe files exist):
 putty localhost;;c:\Program Files\PuTTY\putty.exe;-load "ubuntu32gb";-l "igor"

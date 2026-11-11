@@ -15,7 +15,8 @@ public:
         QString reason;
     };
 
-    // Parses the configuration file. Valid lines are appended to 'entries',
+    // Parses the configuration file. The predefined variable "config_file" holds
+    // the absolute path of this file (native separators). Valid lines are appended to 'entries',
     // invalid lines to 'errors'. Returns false if the file cannot be opened.
     static bool load(const QString &path,
                      QList<ProgramEntry> &entries,

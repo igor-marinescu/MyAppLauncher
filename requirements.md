@@ -98,6 +98,14 @@ Rules:
 - Variables are replaced in all fields (name, options, exe and arguments).
 - If a variable definition is invalid (e.g. invalid variable name), or a program definition uses an undefined variable, the line is ignored and the dialog box "config.txt line # X invalid, ignored" is displayed.
 
+#### Predefined variables
+
+The following variables are defined automatically before the first line of the Configuration File is parsed:
+
+- `config_file` - the absolute path and file name of the currently used Configuration File, with Windows path separators (e.g. `D:\tools\MyAppLauncher\config.txt`).
+
+Predefined variables follow the same rules as user-defined variables: they are used as `$config_file`, the name is case-insensitive, and they can be redefined by the user with `set config_file = <value>` (the new value applies to all following lines).
+
 ### Example 4 (variables)
 
 The following lines in the Configuration File:
@@ -111,6 +119,20 @@ are equivalent to:
 
 ```
 open_file;;notepad.exe;C:\project\path\file.txt
+```
+
+### Example 5 (predefined variable `config_file`)
+
+The following line in the Configuration File:
+
+```
+open_config_file;;notepad.exe;$config_file
+```
+
+defines a program named "open_config_file" that opens the currently used Configuration File in Notepad. If the Configuration File is `D:\tools\MyAppLauncher\config.txt`, the line is equivalent to:
+
+```
+open_config_file;;notepad.exe;D:\tools\MyAppLauncher\config.txt
 ```
 
 ## UI

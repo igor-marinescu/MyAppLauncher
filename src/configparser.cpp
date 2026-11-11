@@ -1,7 +1,9 @@
 #include "configparser.h"
 #include "processutils.h"
 
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QTextStream>
 
 bool ConfigParser::load(const QString &path,
@@ -17,7 +19,10 @@ bool ConfigParser::load(const QString &path,
     }
 
     QTextStream in(&file);   // auto-detects UTF-8/UTF-16 BOM, otherwise local 8-bit
+    // Predefined variables. They behave like user variables and can be redefined.
     Variables vars;
+    vars.insert(QString::fromLatin1("config_file"),
+                QDir::toNativeSeparators(QFileInfo(path).absoluteFilePath()));
     int lineNumber = 0;
     while (!in.atEnd()) {
         const QString raw = in.readLine();

@@ -64,6 +64,14 @@ project notes;once_exe_arg;$editor;$project_path\notes.txt
 - `$name` takes the longest run of letters, digits and `_` after `$`. Write `$$` for a literal `$`. A `$` followed by anything else (e.g. `\\server\c$\dir`) is left as is.
 - Variables are replaced in every field before the line is parsed; `%ENV%` variables in the exe are expanded afterwards.
 
+**Predefined variable `config_file`:** holds the absolute path of the config file currently in use (e.g. `D:\tools\MyAppLauncher\config.txt`). It works like any other variable and can be redefined with `set config_file = ...`. For example, a launcher entry that opens the config file itself:
+
+```
+open_config_file;;notepad.exe;$config_file
+```
+
+Arguments are passed as written, so if the path may contain spaces and the program needs it quoted, write `"$config_file"`.
+
 A line is skipped if it has fewer than 3 fields, an empty name, an unknown option, an exe that doesn't exist, or uses an undefined variable. A `set` line with an invalid variable name is skipped too. At startup each skipped line shows a dialog: *"config.txt line # X invalid, ignored"*, with the reason.
 
 **Where the file is looked for:**
@@ -125,7 +133,7 @@ main.cpp
 | File | Responsibility |
 |---|---|
 | `src/programentry.h` | `ProgramEntry` struct: name, option, exe (as configured and resolved), arguments, icon, line number |
-| `src/configparser.h/.cpp` | Reads and checks `config.txt`, handles `set` variables and `$name` replacement. Returns the valid entries plus a list of line errors |
+| `src/configparser.h/.cpp` | Reads and checks `config.txt`, handles `set` variables (including the predefined `$config_file`) and `$name` replacement. Returns the valid entries plus a list of line errors |
 | `src/processutils.h/.cpp` | All Windows-specific code (see below) |
 | `src/launcherwindow.h/.cpp` | The UI: list text, filtering, selection, keys, launching, minimizing, saving/restoring window geometry |
 | `src/main.cpp` | Finds the config file, shows the error dialogs, loads icons, shows the window |
